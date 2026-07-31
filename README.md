@@ -10,6 +10,11 @@
 
 ## 아키텍처
 
+![NimbusEngine Architecture](assets/architecture.png)
+
+<details>
+<summary>텍스트(mermaid) 버전 펼치기</summary>
+
 ```mermaid
 flowchart TB
     User([User<br/>브라우저])
@@ -49,6 +54,8 @@ flowchart TB
     GRAF -. 조회 .-> PROM
     BE --- DB
 ```
+
+</details>
 
 **한눈에 보는 흐름**
 1. **접속**: `*.sslip.io`가 단일 public IP로 해석 → socat → ingress-nginx가 **Host 헤더로 서비스 분기**

@@ -27,7 +27,7 @@ flowchart TB
         BE[Backend · FastAPI<br/>오케스트레이터 · systemd]
         DB[(MySQL<br/>계정 · 소유권)]
 
-        subgraph K8S["☸️ Kubernetes Cluster · kubeadm · containerd · Calico"]
+        subgraph K8S["☸️ Kubernetes Cluster · kubeadm · containerd · Calico CNI"]
             ING[ingress-nginx<br/>Host 기반 라우팅]
             subgraph NS["사용자별 Namespace 격리 (멀티테넌시)"]
                 A[user-appA<br/>Deploy·Svc·Pod]
@@ -68,12 +68,12 @@ flowchart TB
 
 | 영역 | 사용 기술 |
 |---|---|
-| 오케스트레이션 | Kubernetes (`kubeadm`, 단일 노드) |
-| 컨테이너 런타임 | containerd |
-| CNI | Calico |
-| 외부 노출 | ingress-nginx + sslip.io (wildcard DNS) |
+| 오케스트레이션 | Kubernetes v1.35.6 (`kubeadm`, 단일 노드) |
+| 컨테이너 런타임 | containerd 2.2.5 |
+| CNI | Calico (Tigera operator) |
+| 외부 노출 | ingress-nginx (helm 4.15.1) + sslip.io (wildcard DNS) |
 | 이미지 빌드 | Kaniko (데몬리스) → Docker Hub |
-| 모니터링 | Prometheus + Grafana (kube-prometheus-stack) |
+| 모니터링 | kube-prometheus-stack 87.10.1 (Prometheus + Grafana) |
 | 오케스트레이터 | FastAPI (systemd) + MySQL |
 
 ---

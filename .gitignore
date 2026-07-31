@@ -1,0 +1,16 @@
+# 덤프 산출물 (정리 후 해당 위치로 옮기고, 원본 폴더는 커밋 안 함)
+nimbus-dump/
+
+# 시크릿 — 절대 커밋 금지
+*secret*.yaml
+*secret*.yml
+.env
+*.key
+*.pem
+kubeconfig
+*.kubeconfig
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini

@@ -1,0 +1,21 @@
+# Grafana 외부 노출용 Ingress
+# kube-prometheus-stack helm 설치 시 기본 생성되지 않아 직접 작성.
+# 관련: docs/troubleshooting.md #1
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: grafana.158.247.251.109.sslip.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: prometheus-grafana
+                port:
+                  number: 80

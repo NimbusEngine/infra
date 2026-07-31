@@ -1,0 +1,65 @@
+# ─────────────────────────────────────────────────────────────
+# 참고용(Reference) 매니페스트 — 직접 apply하는 파일이 아님.
+# Backend(FastAPI)가 배포 요청마다 kubernetes client로 아래와 "동등한"
+# 리소스를 코드로 생성합니다. (backend/main.py: create_deployment)
+# <name> 자리에 사용자가 입력한 프로젝트 이름이 들어갑니다.
+# ─────────────────────────────────────────────────────────────
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: user-<name>
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: <name>
+  namespace: user-<name>
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: <name>
+  template:
+    metadata:
+      labels:
+        app: <name>
+    spec:
+      containers:
+        - name: <name>
+          image: whdudwo1127/<name>:latest   # Kaniko가 빌드해 Docker Hub에 push한 이미지
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: <name>
+  namespace: user-<name>
+spec:
+  selector:
+    app: <name>
+  ports:
+    - port: 80
+      targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: <name>
+  namespace: user-<name>
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: <name>.158.247.251.109.sslip.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: <name>
+                port:
+                  number: 80

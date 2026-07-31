@@ -1,0 +1,36 @@
+# ─────────────────────────────────────────────────────────────
+# 참고용(Reference) — Backend가 배포 시 생성하는 Kaniko 빌드 Job.
+# (backend/main.py: deploy_from_repo)
+# 저장소에 Dockerfile이 있으면 git context로 바로 빌드,
+# 없으면 자동 생성한 Dockerfile을 init container로 주입 후 빌드.
+# 아래는 "Dockerfile이 있는 경우"의 단순화된 형태.
+# ─────────────────────────────────────────────────────────────
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kaniko-build-<name>
+  namespace: default
+  annotations:
+    nimbus.io/owner: <username>
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 300      # 완료 5분 후 자동 정리(일회성)
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: kaniko
+          image: gcr.io/kaniko-project/executor:latest
+          args:
+            - "--context=git://github.com/<owner>/<repo>"
+            - "--destination=whdudwo1127/<name>:latest"
+          volumeMounts:
+            - name: docker-config
+              mountPath: /kaniko/.docker
+      volumes:
+        - name: docker-config
+          secret:
+            secretName: dockerhub-secret     # Docker Hub push 인증
+            items:
+              - key: .dockerconfigjson
+                path: config.json

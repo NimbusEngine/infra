@@ -3,7 +3,7 @@
 매니지드 쿠버네티스(EKS/GKE) 없이, **단일 Ubuntu VM 위에 `kubeadm`으로 직접 구성한 self-hosted PaaS**의 인프라 레포입니다.
 사용자가 GitHub 저장소 URL만 입력하면 → 이미지 빌드 → 쿠버네티스에 격리 배포 → 고유 URL로 접속까지 자동화됩니다.
 
-> 이 레포는 **인프라/배포/운영** 산출물(매니페스트, 클러스터 구성, 트러블슈팅)을 담습니다.
+> 이 레포는 인프라/배포 산출물(매니페스트, 클러스터 구성)을 담는다.
 > 애플리케이션 코드는 [backend](https://github.com/NimbusEngine/backend) · [frontend](https://github.com/NimbusEngine/frontend) 참고.
 
 ---
@@ -22,12 +22,12 @@ flowchart TB
     GH[(GitHub<br/>소스 저장소)]
     DH[(Docker Hub<br/>이미지 레지스트리)]
 
-    subgraph VM["🖥️ 단일 Ubuntu VM · public IP 158.247.251.109 · SPOF"]
+    subgraph VM["단일 Ubuntu VM · public IP 158.247.251.109 · SPOF"]
         SOCAT[socat<br/>:26117 → NodePort 30707]
         BE[Backend · FastAPI<br/>오케스트레이터 · systemd]
         DB[(MySQL<br/>계정 · 소유권)]
 
-        subgraph K8S["☸️ Kubernetes Cluster · kubeadm · containerd · Calico CNI"]
+        subgraph K8S["Kubernetes Cluster · kubeadm · containerd · Calico CNI"]
             ING[ingress-nginx<br/>Host 기반 라우팅]
             subgraph NS["사용자별 Namespace 격리 (멀티테넌시)"]
                 A[user-appA<br/>Deploy·Svc·Pod]
@@ -91,13 +91,12 @@ flowchart TB
 
 ```
 .
-├── cluster/          # 클러스터 부트스트랩 (kubeadm, CNI) 기록
-├── manifests/        # 실제 적용한 매니페스트
+├── cluster/          # 클러스터 구성 (kubeadm, CNI, 노출 경로)
+├── monitoring/       # Prometheus / Grafana
+├── manifests/        # 적용한 매니페스트
 │   └── reference/    # Backend가 코드로 생성하는 리소스의 참고 예시
-├── monitoring/       # Prometheus/Grafana (helm values)
-├── docs/             # 트러블슈팅 등
 ├── scripts/          # 클러스터 상태 덤프 스크립트
-└── assets/           # 아키텍처 다이어그램 이미지
+└── assets/           # 아키텍처 다이어그램
 ```
 
 ---

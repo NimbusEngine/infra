@@ -9,7 +9,7 @@ set -e
 OUT="./nimbus-dump"
 mkdir -p "$OUT"/{state,manifests,monitoring,cluster}
 
-echo "[1/5] 클러스터 상태 스냅샷 (포폴 캡처용)"
+echo "[1/5] 클러스터 상태 스냅샷"
 kubectl get nodes -o wide            > "$OUT/state/nodes.txt"
 kubectl get pods -A -o wide          > "$OUT/state/pods.txt"
 kubectl get ns                       > "$OUT/state/namespaces.txt"
